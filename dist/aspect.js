@@ -1,6 +1,9 @@
 define(function(require, exports, module){
     'use strict'
     
+    // Thanks:
+    //     - https://github.com/aralejs/base/blob/master/src/aspect.js
+    
     exports.before = function(instance, methodNames, callback, ctx){
         return weave.call(instance, 'before', methodNames, callback, ctx);
     };
@@ -54,18 +57,5 @@ define(function(require, exports, module){
         }
     
         this[methodName].__isAspected = true;
-    
-        // this[methodName] = function(){
-        //     if(when == 'before' && callback.apply(ctx || this, arguments) === false){
-        //         this._____ = false;
-        //     }
-        //     console.log(this._____)
-        //     if(this._____ != false){
-        //         var ret = old.apply(this, arguments);
-        //         when == 'after' && callback.apply(ctx || this, [ret].concat(Array.prototype.slice.call(arguments)));
-        //     }
-    
-        //     return ret;
-        // };
     };
 });
