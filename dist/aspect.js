@@ -21,7 +21,7 @@ define(function(require, exports, module){
             method = getMethod(this, methodName);
     
             if(!method.__isAspected){
-                wrap.call(this, methodName, when, callback, ctx);
+                wrap.call(this, methodName);
             }
     
             this['__' + when + methodName] = function(){
@@ -42,7 +42,7 @@ define(function(require, exports, module){
         return method;
     }
     
-    function wrap(methodName, when, callback, ctx){
+    function wrap(methodName){
         var old = this[methodName];
     
         this[methodName] = function(){
