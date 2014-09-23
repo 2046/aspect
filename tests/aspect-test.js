@@ -106,5 +106,41 @@ define(function(require, exports, module){
             a.hide();
             equals(counter, 4);
         });
+
+        it('many times before after', function(){
+            var counter = 0;
+            var o = {
+                xxx : function(){
+                    return 'c';
+                }
+            };
+
+            aspect.before(o, 'xxx', function(a, b){
+                counter++;
+            });
+
+            aspect.before(o, 'xxx', function(a, b){
+                counter++;
+            });
+
+            aspect.before(o, 'xxx', function(a, b){
+                counter++;
+            });
+
+            aspect.after(o, 'xxx', function(returned, a, b){
+                counter++;
+            });
+
+            aspect.after(o, 'xxx', function(returned, a, b){
+                counter++;
+            });
+
+            aspect.after(o, 'xxx', function(returned, a, b){
+                counter++;
+            });
+
+            o.xxx('a', 'b');
+            equals(counter, 6);
+        });
     });
 })

@@ -3,16 +3,18 @@
 // Thanks:
 //     - https://github.com/aralejs/base/blob/master/src/aspect.js
 
-exports.before = function(instance, methodNames, callback, ctx){
+var aspect = {};
+
+aspect.before = function(instance, methodNames, callback, ctx){
     return weave.call(instance, 'before', methodNames, callback, ctx);
 };
 
-exports.after = function(instance, methodNames, callback, ctx){
+aspect.after = function(instance, methodNames, callback, ctx){
     return weave.call(instance, 'after', methodNames, callback, ctx);
 };
 
 function weave(when, methodNames, callback, ctx){
-    var methodName, method;
+    var methodName, method, old;
 
     methodNames = methodNames.split(/\s+/);
 
@@ -23,12 +25,21 @@ function weave(when, methodNames, callback, ctx){
             wrap.call(this, methodName);
         }
 
-        this['__' + when + methodName] = function(){
-            return callback.apply(ctx || this, arguments);
-        };
+        if(old = this['__' + when + methodName]){
+            this['__' + when + methodName] = function(){
+                if(old.apply(ctx || this, arguments) === false){
+                    return false;
+                }
+                return callback.apply(ctx || this, arguments);
+            };
+        }else{
+            this['__' + when + methodName] = function(){
+                return callback.apply(ctx || this, arguments);
+            };
+        }
     }
 
-    return this;
+    return aspect;
 };
 
 function getMethod(host, methodName){
@@ -57,3 +68,5 @@ function wrap(methodName){
 
     this[methodName].__isAspected = true;
 };
+
+module.exports = aspect;
