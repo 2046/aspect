@@ -108,3 +108,33 @@ aspect.after(o, 'xxx', function(returned, a, b){
 
 o.xxx(1, 2); 3, undefined, 1, 2
 ```
+
+**``before``和``after``是按注册的先后顺序执行的，先注册先执行**
+
+```
+var aspect = require('aspect');
+
+var o = {
+  xxx : function(){
+    console.log(3);
+  }
+};
+
+aspect.before(o, 'xxx', function(){
+  console.log(1);
+});
+
+aspect.before(o, 'xxx', function(){
+  console.log(2);
+});
+
+aspect.after(o, 'xxx', function(){
+  console.log(4);
+});
+
+aspect.after(o, 'xxx', function(){
+  console.log(5);
+});
+
+o.xxx(); 1, 2, 3, 4, 5
+```
